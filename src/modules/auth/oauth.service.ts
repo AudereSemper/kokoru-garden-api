@@ -20,6 +20,11 @@ export class OAuthService implements IOAuthService {
 
   async processGoogleCode(code: string): Promise<GoogleProfile> {
     try {
+      logger.info('Google OAuth attempt:', {
+        redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+        code_length: code?.length,
+      });
+
       const { tokens } = await this.googleClient.getToken({
         code: code,
         redirect_uri: process.env.GOOGLE_REDIRECT_URI,
