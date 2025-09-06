@@ -3,26 +3,27 @@
 import { OAuth2Client } from 'google-auth-library';
 import { logger } from '../../shared/utils/logger';
 import type { User } from '../../database/schema';
-import { IOAuthService } from "./interfaces/oauth.service.interface";
-import { GoogleProfile } from "./auth.types";
-import { IUserRepository } from "./interfaces/user.repository.interface";
+import { IOAuthService } from './interfaces/oauth.service.interface';
+import { GoogleProfile } from './auth.types';
+import { IUserRepository } from './interfaces/user.repository.interface';
 
 export class OAuthService implements IOAuthService {
   private googleClient: OAuth2Client;
 
-  constructor(
-    private readonly userRepository: IUserRepository
-  ) {
+  constructor(private readonly userRepository: IUserRepository) {
     this.googleClient = new OAuth2Client(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      process.env.GOOGLE_REDIRECT_URI
+      process.env.GOOGLE_REDIRECT_URI,
     );
   }
 
   async processGoogleCode(code: string): Promise<GoogleProfile> {
     try {
-      const { tokens } = await this.googleClient.getToken(code);
+      const { tokens } = await this.googleClient.getToken({
+        code: code,
+        redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+      });
       this.googleClient.setCredentials(tokens);
 
       const ticket = await this.googleClient.verifyIdToken({
@@ -51,9 +52,11 @@ export class OAuthService implements IOAuthService {
     }
   }
 
-  async findOrCreateGoogleUser(profile: GoogleProfile): Promise<{ user: User; isNewUser: boolean }> {
+  async findOrCreateGoogleUser(
+    profile: GoogleProfile,
+  ): Promise<{ user: User; isNewUser: boolean }> {
     let user = await this.userRepository.findByEmail(profile.email);
-    
+
     if (!user) {
       user = await this.userRepository.create({
         email: profile.email,
@@ -65,7 +68,7 @@ export class OAuthService implements IOAuthService {
         profileImageUrl: profile.picture,
         onboardingStep: 0,
       });
-      
+
       return { user, isNewUser: true };
     }
 
