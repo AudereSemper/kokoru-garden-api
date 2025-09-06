@@ -1,6 +1,16 @@
 // src/database/schema/tables/users.table.ts
-import { pgTable, uuid, text, timestamp, boolean, integer, index } from 'drizzle-orm/pg-core';
-import { authProviderEnum } from '../enums';
+import {
+  pgTable,
+  uuid,
+  text,
+  timestamp,
+  boolean,
+  integer,
+  index,
+  decimal,
+  date,
+} from 'drizzle-orm/pg-core';
+import { authProviderEnum, acquisitionSourceEnum } from '../enums';
 
 export const users = pgTable(
   'users',
@@ -34,6 +44,21 @@ export const users = pgTable(
     hasLoggedIn: boolean('has_logged_in').notNull().default(false),
     hasCompletedOnboarding: boolean('has_completed_onboarding').notNull().default(false),
     onboardingStep: integer('onboarding_step').default(0),
+
+    // Onboarding Step 1: First photo
+    onboardingFirstPhotoUrl: text('onboarding_first_photo_url'),
+    onboardingPhotoTakenAt: date('onboarding_photo_taken_at'),
+
+    // Onboarding Step 2: Tree identity
+    onboardingTreeNickname: text('onboarding_tree_nickname'),
+    onboardingTreeSpecies: text('onboarding_tree_species'),
+    onboardingTreeAcquiredDate: date('onboarding_tree_acquired_date'),
+    onboardingTreeAcquisitionSource: acquisitionSourceEnum('onboarding_tree_acquisition_source'),
+    onboardingTreeSourceName: text('onboarding_tree_source_name'),
+    onboardingTreePurchasePrice: decimal('onboarding_tree_purchase_price', {
+      precision: 10,
+      scale: 2,
+    }),
 
     // Timestamps
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),

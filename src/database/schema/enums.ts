@@ -1,12 +1,15 @@
+// src/database/schema/enums.ts
 import { pgEnum } from 'drizzle-orm/pg-core';
 
 export const authProviderEnum = pgEnum('auth_provider', ['local', 'google']);
 
-export const subscriptionTierEnum = pgEnum('subscription_tier', ['free', 'pro']);
+export const subscriptionTierEnum = pgEnum('subscription_tier', ['free', 'premium', 'pro']);
 
 export const acquisitionSourceEnum = pgEnum('acquisition_source', [
-  'nursery',
-  'private_seller', 
+  'purchased',
   'gift',
-  'grown_from_seed'
+  'propagation',
+  'collected',
+  'other',
 ]);
+  
