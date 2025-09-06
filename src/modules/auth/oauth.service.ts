@@ -20,22 +20,19 @@ export class OAuthService implements IOAuthService {
 
   async processGoogleCode(code: string): Promise<GoogleProfile> {
     try {
-      // Crea un nuovo client per ogni richiesta con il redirect_uri corretto
-      const redirectUri =
-        process.env.GOOGLE_REDIRECT_URI || 'https://kokoru-garden.pages.dev/auth/callback';
+      const redirectUri = 'https://kokoru-garden.pages.dev/auth/callback';
 
+      // Crea client con credenziali
       const client = new OAuth2Client(
         process.env.GOOGLE_CLIENT_ID,
         process.env.GOOGLE_CLIENT_SECRET,
-        redirectUri, // Passa qui il redirect_uri
       );
 
-      console.log('ATTEMPTING GOOGLE AUTH WITH:', {
+      // Passa redirect_uri nelle opzioni
+      const { tokens } = await client.getToken({
+        code: code,
         redirect_uri: redirectUri,
-        code_first_chars: code?.substring(0, 10),
       });
-
-      const { tokens } = await client.getToken(code);
 
       client.setCredentials(tokens);
 
@@ -70,6 +67,7 @@ export class OAuthService implements IOAuthService {
       throw new Error('Google authentication failed');
     }
   }
+
   async findOrCreateGoogleUser(
     profile: GoogleProfile,
   ): Promise<{ user: User; isNewUser: boolean }> {
