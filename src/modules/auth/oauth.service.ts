@@ -8,7 +8,7 @@ import { GoogleProfile } from './auth.types';
 import { IUserRepository } from './interfaces/user.repository.interface';
 
 export class OAuthService implements IOAuthService {
-  private googleClient: OAuth2Client;
+  googleClient: OAuth2Client;
 
   constructor(private readonly userRepository: IUserRepository) {
     this.googleClient = new OAuth2Client(
@@ -58,10 +58,11 @@ export class OAuthService implements IOAuthService {
         picture: payload.picture,
         emailVerified: payload.email_verified || false,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as { message?: string; response?: { data?: string } };
       logger.error('Google OAuth failed:', {
-        message: error.message,
-        response: error.response?.data,
+        message: err.message,
+        response: err.response?.data,
       });
       throw new Error('Google authentication failed');
     }
