@@ -7,7 +7,7 @@ import { authSchemas } from './auth.schemas';
 export async function authRoutes(
   fastify: FastifyInstance,
   controller: AuthController,
-//   middleware: AuthMiddleware
+  //   middleware: AuthMiddleware
 ) {
   // =============================================================================
   // 🌍 PUBLIC ROUTES
@@ -16,43 +16,43 @@ export async function authRoutes(
   // Register
   fastify.post('/register', {
     schema: authSchemas.register,
-    handler: controller.register
+    handler: controller.register,
   });
 
   // Login
   fastify.post('/login', {
     schema: authSchemas.login,
-    handler: controller.login
+    handler: controller.login,
   });
 
   // Verify email
   fastify.get('/verify-email/:token', {
     schema: authSchemas.verifyEmail,
-    handler: controller.verifyEmail
+    handler: controller.verifyEmail,
   });
 
   // Forgot password
   fastify.post('/forgot-password', {
     schema: authSchemas.forgotPassword,
-    handler: controller.forgotPassword
+    handler: controller.forgotPassword,
   });
 
   // Reset password
   fastify.post('/reset-password/:token', {
     schema: authSchemas.resetPassword,
-    handler: controller.resetPassword
+    handler: controller.resetPassword,
   });
 
   // Refresh token
   fastify.post('/refresh', {
     schema: authSchemas.refreshToken,
-    handler: controller.refreshToken
+    handler: controller.refreshToken,
   });
 
   // Google OAuth with code
   fastify.post('/google/code', {
     schema: authSchemas.googleAuth,
-    handler: controller.googleAuthCode
+    handler: controller.googleAuthCode,
   });
 
   // =============================================================================
@@ -60,37 +60,39 @@ export async function authRoutes(
   // =============================================================================
 
   // Logout TO IMPLEMENT
-//   fastify.post('/logout', {
-//     preHandler: middleware.authenticate,
-//     schema: authSchemas.logout,
-//     handler: controller.logout
-//   });
+  //   fastify.post('/logout', {
+  //     preHandler: middleware.authenticate,
+  //     schema: authSchemas.logout,
+  //     handler: controller.logout
+  //   });
 
-//   // Get current user
-//   fastify.get('/me', {
-//     preHandler: middleware.authenticate,
-//     schema: authSchemas.getMe,
-//     handler: controller.getMe
-//   });
+  //   // Get current user
+  //   fastify.get('/me', {
+  //     preHandler: middleware.authenticate,
+  //     schema: authSchemas.getMe,
+  //     handler: controller.getMe
+  //   });
 
-//   // Resend verification email
-//   fastify.post('/resend-verification', {
-//     preHandler: middleware.authenticate,
-//     schema: authSchemas.resendVerification,
-//     handler: controller.resendVerification
-//   });
+  //   // Resend verification email
+  //   fastify.post('/resend-verification', {
+  //     preHandler: middleware.authenticate,
+  //     schema: authSchemas.resendVerification,
+  //     handler: controller.resendVerification
+  //   });
 }
 
 // Alternative plugin-style registration
 export async function authRoutesPlugin(fastify: FastifyInstance) {
   // This would be used if dependencies are injected differently
   // For now, just register the route structure
-  
-  await fastify.register(async function authPlugin(fastify) {
-    // Dependencies would be resolved here
-    // const controller = resolve<AuthController>('AuthController');
-    // const middleware = resolve<AuthMiddleware>('AuthMiddleware');
-    
-    // await authRoutes(fastify, controller, middleware);
-  }, { prefix: '/api/auth' });
+
+  await fastify.register(
+    async function authPlugin() {
+      // Dependencies would be resolved here
+      // const controller = resolve<AuthController>('AuthController');
+      // const middleware = resolve<AuthMiddleware>('AuthMiddleware');
+      // await authRoutes(fastify, controller, middleware);
+    },
+    { prefix: '/api/auth' },
+  );
 }

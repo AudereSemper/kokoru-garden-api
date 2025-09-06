@@ -5,7 +5,7 @@ import { logger } from '../shared/utils/logger';
 import { eq } from 'drizzle-orm';
 import * as bcrypt from 'bcryptjs';
 import * as dotenv from 'dotenv';
-import { DEFAULT_SPECIES } from "./data/species.data";
+import { DEFAULT_SPECIES } from './data/species.data';
 
 dotenv.config();
 
@@ -82,6 +82,8 @@ async function seedTestUser() {
       .insert(users)
       .values({
         email: TEST_EMAIL,
+        firstName: 'Test',
+        lastName: 'User',
         password: hashedPassword,
         isEmailVerified: true,
         hasLoggedIn: true,

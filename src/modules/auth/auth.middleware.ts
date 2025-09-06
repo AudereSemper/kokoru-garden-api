@@ -1,5 +1,5 @@
 // src/modules/auth/auth.middleware.ts
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyRequest } from 'fastify';
 import { IUserRepository } from './interfaces/user.repository.interface';
 import { AuthenticationError, AuthorizationError } from '../../shared/errors';
 import { MESSAGE_CODES } from "@/shared/constants/message-codes";
@@ -79,7 +79,7 @@ export class AuthMiddleware {
    * Optional authentication middleware
    * Attaches user if valid token exists, otherwise continues
    */
-  optionalAuth = async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+  optionalAuth = async (request: FastifyRequest): Promise<void> => {
     const authHeader = request.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -126,7 +126,7 @@ export class AuthMiddleware {
    * @param roles - Allowed roles
    */
   authorize = (...roles: string[]) => {
-    return async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+    return async (request: FastifyRequest): Promise<void> => {
       if (!request.user) {
         throw new AuthenticationError(MESSAGES[MESSAGE_CODES.AUTH_INVALID_TOKEN]);
       }

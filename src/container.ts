@@ -1,14 +1,14 @@
 // src/container.ts
 
-import { getRedisClient } from '@/shared/services/redis.service';
-import { AuthService } from '@/modules/auth/auth.service';
-import { AuthController } from '@/modules/auth/auth.controller';
+import { AuthService } from './modules/auth/auth.service';
+import { AuthController } from './modules/auth/auth.controller';
 import { EmailService } from './modules/auth/email.service';
 import { OAuthService } from './modules/auth/oauth.service';
 import { PasswordService } from './modules/auth/password.service';
 import { TokenService } from './modules/auth/token.service';
 import { UserRepository } from './modules/auth/user.repository';
-import { RateLimiterService } from "./modules/auth/rate-limiter.service";
+import { RateLimiterService } from './modules/auth/rate-limiter.service';
+import { getRedisClient } from "./shared/services/redis.service";
 
 export interface Container {
   authController: AuthController;
