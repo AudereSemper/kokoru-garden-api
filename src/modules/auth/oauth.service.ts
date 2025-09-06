@@ -20,24 +20,33 @@ export class OAuthService implements IOAuthService {
 
   async processGoogleCode(code: string): Promise<GoogleProfile> {
     try {
-      const redirectUri = 'https://kokoru-garden.pages.dev/auth/callback';
-
-      // Crea client con credenziali
-      const client = new OAuth2Client(
-        process.env.GOOGLE_CLIENT_ID,
-        process.env.GOOGLE_CLIENT_SECRET,
-      );
-
-      // Passa redirect_uri nelle opzioni
-      const { tokens } = await client.getToken({
+      const params = new URLSearchParams({
         code: code,
-        redirect_uri: redirectUri,
+        client_id: process.env.GOOGLE_CLIENT_ID!,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+        redirect_uri: 'https://kokoru-garden.pages.dev/auth/callback',
+        grant_type: 'authorization_code',
       });
 
-      client.setCredentials(tokens);
+      const response = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params.toString(),
+      });
 
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error('Token exchange failed:', data);
+        throw new Error(data.error_description || 'Token exchange failed');
+      }
+
+      // Ora verifica l'ID token
+      const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
       const ticket = await client.verifyIdToken({
-        idToken: tokens.id_token!,
+        idToken: data.id_token,
         audience: process.env.GOOGLE_CLIENT_ID,
       });
 
