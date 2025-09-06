@@ -112,23 +112,40 @@ export class EmailService implements IEmailService {
    */
   private async loadTemplates(): Promise<void> {
     try {
-      const templatesDir = path.join(__dirname, '../../../templates/emails');
+      const templatesDir = path.join(process.cwd(), 'src/templates/emails');
       logger.info(`Looking for templates in: ${templatesDir}`);
 
-      const templateFiles = await fs.readdir(templatesDir);
+      // Verifica che la directory esista
+      try {
+        await fs.access(templatesDir);
+      } catch {
+        logger.error(`Directory does not exist: ${templatesDir}`);
+        return;
+      }
 
+      // Leggi i file
+      const templateFiles = await fs.readdir(templatesDir);
+      logger.info(`Found ${templateFiles.length} files: ${templateFiles.join(', ')}`);
+
+      // Carica ogni template
       for (const file of templateFiles) {
         if (file.endsWith('.html')) {
           const templateName = file.replace('.html', '');
           const templatePath = path.join(templatesDir, file);
           const templateContent = await fs.readFile(templatePath, 'utf-8');
           this.templates.set(templateName, templateContent);
+          logger.info(`Loaded template: ${templateName}`);
         }
       }
 
-      logger.info(`Loaded ${this.templates.size} email templates`);
+      logger.info(`Total templates loaded: ${this.templates.size}`);
     } catch (error) {
-      logger.warn({ error }, 'Failed to load email templates');
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : error,
+        },
+        'Failed to load email templates',
+      );
     }
   }
 
