@@ -40,7 +40,13 @@ export function getRedisClient(): Redis {
     };
 
     if (process.env.REDIS_URL) {
-      redisClient = new Redis(process.env.REDIS_URL, options);
+      // Upstash needs TLS configuration
+      redisClient = new Redis(process.env.REDIS_URL, {
+        ...options,
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
     } else {
       redisClient = new Redis({
         host: process.env.REDIS_HOST || 'localhost',
