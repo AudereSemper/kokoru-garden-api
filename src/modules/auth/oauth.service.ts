@@ -60,6 +60,9 @@ export class OAuthService implements IOAuthService {
       };
     } catch (error: unknown) {
       const err = error as { message?: string; response?: { data?: string } };
+      console.error('Google OAuth failed - FULL ERROR:', error);
+      console.error('Error message:', err.message);
+      console.error('Error response:', err.response?.data);
       logger.error('Google OAuth failed:', {
         message: err.message,
         response: err.response?.data,
