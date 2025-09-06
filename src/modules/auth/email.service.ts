@@ -359,6 +359,21 @@ export class EmailService implements IEmailService {
         rejected: [],
       };
     } catch (error) {
+      logger.error(
+        {
+          error:
+            error instanceof Error
+              ? {
+                  message: error.message,
+                  stack: error.stack,
+                  name: error.name,
+                }
+              : error,
+          to,
+          subject,
+        },
+        'Failed to send email',
+      );
       logger.error({ error, to, subject }, 'Failed to send email');
       await this.logEmailSent(to, subject);
       throw error;
