@@ -3,9 +3,9 @@
 import jwt, { JwtPayload as BaseJwtPayload } from 'jsonwebtoken';
 import { randomBytes, createHash } from 'crypto';
 import type { Redis } from 'ioredis';
-import { logger } from '@/shared/utils/logger';
+import { logger } from '../../shared/utils/logger';
 import { ITokenService } from './interfaces/token.service.interface';
-import { TokenExpiredError, InvalidTokenError } from '@/shared/errors';
+import { TokenExpiredError, InvalidTokenError } from '../../shared/errors';
 import { JwtPayload } from './auth.types';
 
 interface TokenServiceConfig {

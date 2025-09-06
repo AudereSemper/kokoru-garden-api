@@ -1,6 +1,6 @@
 // src/shared/services/redis.service.ts
 import Redis from 'ioredis';
-import { logger } from '@/shared/utils/logger';
+import { logger } from '../../shared/utils/logger';
 
 let redis: Redis | null = null;
 

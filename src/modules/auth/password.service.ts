@@ -2,7 +2,7 @@
 
 import argon2 from 'argon2';
 import { randomBytes } from 'crypto';
-import { logger } from '@/shared/utils/logger';
+import { logger } from '../../shared/utils/logger';
 
 export interface IPasswordService {
   hash(password: string): Promise<string>;

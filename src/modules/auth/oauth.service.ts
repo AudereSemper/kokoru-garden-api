@@ -1,8 +1,8 @@
 // src/modules/auth/services/oauth.service.ts
 
 import { OAuth2Client } from 'google-auth-library';
-import { logger } from '@/shared/utils/logger';
-import type { User } from '@/database/schema';
+import { logger } from '../../shared/utils/logger';
+import type { User } from '../../database/schema';
 import { IOAuthService } from "./interfaces/oauth.service.interface";
 import { GoogleProfile } from "./auth.types";
 import { IUserRepository } from "./interfaces/user.repository.interface";

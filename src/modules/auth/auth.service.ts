@@ -15,10 +15,10 @@ import {
   RateLimitError,
 } from '../../shared/errors';
 import { logger } from '../../shared/utils/logger';
-import { MESSAGE_CODES } from '@/shared/constants/message-codes';
-import { MESSAGES } from '@/shared/constants/messages';
+import { MESSAGE_CODES } from '../../shared/constants/message-codes';
+import { MESSAGES } from '../../shared/constants/messages';
 import { IAuthService } from './interfaces/auth.interfaces';
-import { User } from '@/database/schema';
+import { User } from '../../database/schema';
 import { ITokenService } from "./interfaces/token.service.interface";
 
 export class AuthService implements IAuthService {

@@ -10,8 +10,8 @@ import {
   AuthenticatedRequest,
 } from './auth.types';
 import { IAuthService } from './interfaces/auth.interfaces';
-import { MESSAGE_CODES } from '@/shared/constants/message-codes';
-import { MESSAGES } from '@/shared/constants/messages';
+import { MESSAGES } from '../../shared/constants/messages';
+import { MESSAGE_CODES } from '../../shared/constants/message-codes';
 
 /**
  * Auth Controller - HTTP Layer Only

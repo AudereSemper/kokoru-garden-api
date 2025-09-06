@@ -4,7 +4,7 @@ import { CreateEmailResponse, Resend } from 'resend';
 import path from 'path';
 import { promises as fs } from 'fs';
 import type { Redis } from 'ioredis';
-import { logger } from '@/shared/utils/logger';
+import { logger } from '../../shared/utils/logger';
 import {
   EMAIL_ERRORS,
   RESEND_CONFIG,
@@ -12,7 +12,7 @@ import {
   EMAIL_PATTERNS,
   EMAIL_PRIORITIES,
   EMAIL_STATUS,
-} from '@/shared/constants/email.constants';
+} from '../../shared/constants/email.constants';
 
 // Types definiti correttamente
 interface EmailOptions {
