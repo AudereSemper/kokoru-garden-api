@@ -11,6 +11,11 @@ export class OAuthService implements IOAuthService {
   private googleClient: OAuth2Client;
 
   constructor(private readonly userRepository: IUserRepository) {
+    logger.info('OAuthService initialized with:', {
+      hasClientId: !!process.env.GOOGLE_CLIENT_ID,
+      hasClientSecret: !!process.env.GOOGLE_CLIENT_SECRET,
+      redirectUri: process.env.GOOGLE_REDIRECT_URI || 'NOT SET',
+    });
     this.googleClient = new OAuth2Client(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
