@@ -81,8 +81,12 @@ export class TokenService implements ITokenService {
       throw new InvalidTokenError('userId is required in payload');
     }
 
+    const { exp, iat, ...cleanPayload } = payload;
+    console.log('>>>> ~ TokenService ~ generateAccessToken ~ iat:', iat);
+    console.log('>>>> ~ TokenService ~ generateAccessToken ~ exp:', exp);
+
     const tokenPayload = {
-      ...payload,
+      ...cleanPayload,
       sessionId,
       type: 'access',
     };
