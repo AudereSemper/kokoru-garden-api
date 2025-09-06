@@ -113,6 +113,8 @@ export class EmailService implements IEmailService {
   private async loadTemplates(): Promise<void> {
     try {
       const templatesDir = path.join(__dirname, '../../../templates/emails');
+      logger.info(`Looking for templates in: ${templatesDir}`);
+
       const templateFiles = await fs.readdir(templatesDir);
 
       for (const file of templateFiles) {
