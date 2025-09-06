@@ -11,11 +11,6 @@ export class OAuthService implements IOAuthService {
   private googleClient: OAuth2Client;
 
   constructor(private readonly userRepository: IUserRepository) {
-    console.log('OAuthService ENV CHECK:', {
-      GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'MISSING',
-      GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'MISSING',
-      GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI || 'MISSING',
-    });
     this.googleClient = new OAuth2Client(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
@@ -25,10 +20,11 @@ export class OAuthService implements IOAuthService {
 
   async processGoogleCode(code: string): Promise<GoogleProfile> {
     try {
-      console.log('OAuthService ENV CHECK:', {
-        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'MISSING',
-        GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'MISSING',
-        GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI || 'MISSING',
+      const redirectUri = 'https://kokoru-garden.pages.dev/auth/callback';
+
+      console.log('ATTEMPTING GOOGLE AUTH WITH:', {
+        redirect_uri: redirectUri,
+        code_first_chars: code?.substring(0, 10),
       });
 
       const { tokens } = await this.googleClient.getToken({
