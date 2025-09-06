@@ -20,20 +20,26 @@ export class OAuthService implements IOAuthService {
 
   async processGoogleCode(code: string): Promise<GoogleProfile> {
     try {
-      const redirectUri = 'https://kokoru-garden.pages.dev/auth/callback';
+      // Crea un nuovo client per ogni richiesta con il redirect_uri corretto
+      const redirectUri =
+        process.env.GOOGLE_REDIRECT_URI || 'https://kokoru-garden.pages.dev/auth/callback';
+
+      const client = new OAuth2Client(
+        process.env.GOOGLE_CLIENT_ID,
+        process.env.GOOGLE_CLIENT_SECRET,
+        redirectUri, // Passa qui il redirect_uri
+      );
 
       console.log('ATTEMPTING GOOGLE AUTH WITH:', {
         redirect_uri: redirectUri,
         code_first_chars: code?.substring(0, 10),
       });
 
-      const { tokens } = await this.googleClient.getToken({
-        code: code,
-        redirect_uri: process.env.GOOGLE_REDIRECT_URI,
-      });
-      this.googleClient.setCredentials(tokens);
+      const { tokens } = await client.getToken(code);
 
-      const ticket = await this.googleClient.verifyIdToken({
+      client.setCredentials(tokens);
+
+      const ticket = await client.verifyIdToken({
         idToken: tokens.id_token!,
         audience: process.env.GOOGLE_CLIENT_ID,
       });
@@ -43,22 +49,23 @@ export class OAuthService implements IOAuthService {
         throw new Error('Invalid Google token');
       }
 
-      // Mappa al formato GoogleProfile da auth.types
       return {
         id: payload.sub,
         email: payload.email!,
-        name: payload.name || `${payload.given_name || ''} ${payload.family_name || ''}`.trim(), // Campo mancante
-        firstName: payload.given_name!,
-        lastName: payload.family_name!,
+        name: payload.name || `${payload.given_name || ''} ${payload.family_name || ''}`.trim(),
+        firstName: payload.given_name || '',
+        lastName: payload.family_name || '',
         picture: payload.picture,
         emailVerified: payload.email_verified || false,
       };
-    } catch (error) {
-      logger.error({ error }, 'Google OAuth failed');
+    } catch (error: any) {
+      logger.error('Google OAuth failed:', {
+        message: error.message,
+        response: error.response?.data,
+      });
       throw new Error('Google authentication failed');
     }
   }
-
   async findOrCreateGoogleUser(
     profile: GoogleProfile,
   ): Promise<{ user: User; isNewUser: boolean }> {
