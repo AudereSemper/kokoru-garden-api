@@ -81,7 +81,20 @@ async function start(): Promise<void> {
 
     logger.info('✅ Kokoru Garden API is ready!');
   } catch (error) {
-    logger.error('❌ Failed to start server:', error);
+    logger.error(
+      {
+        error:
+          error instanceof Error
+            ? {
+                message: error.message,
+                stack: error.stack,
+                name: error.name,
+              }
+            : error,
+      },
+      '❌ Failed to start server - Full error details',
+    );
+    console.error('DETAILED ERROR:', error);
     await gracefulShutdown();
     process.exit(1);
   }
