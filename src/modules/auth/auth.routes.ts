@@ -13,46 +13,45 @@ export async function authRoutes(
   // 🌍 PUBLIC ROUTES
   // =============================================================================
 
-  // Register
   fastify.post('/register', {
     schema: authSchemas.register,
-    handler: controller.register,
+    handler: controller.register.bind(controller), // ← FIX: bind context
   });
 
   // Login
   fastify.post('/login', {
     schema: authSchemas.login,
-    handler: controller.login,
+    handler: controller.login.bind(controller),
   });
 
   // Verify email
   fastify.get('/verify-email/:token', {
     schema: authSchemas.verifyEmail,
-    handler: controller.verifyEmail,
+    handler: controller.verifyEmail.bind(controller),
   });
 
   // Forgot password
   fastify.post('/forgot-password', {
     schema: authSchemas.forgotPassword,
-    handler: controller.forgotPassword,
+    handler: controller.forgotPassword.bind(controller),
   });
 
   // Reset password
   fastify.post('/reset-password/:token', {
     schema: authSchemas.resetPassword,
-    handler: controller.resetPassword,
+    handler: controller.resetPassword.bind(controller),
   });
 
   // Refresh token
   fastify.post('/refresh', {
     schema: authSchemas.refreshToken,
-    handler: controller.refreshToken,
+    handler: controller.refreshToken.bind(controller),
   });
 
   // Google OAuth with code
   fastify.post('/google/code', {
     schema: authSchemas.googleAuth,
-    handler: controller.googleAuthCode,
+    handler: controller.googleAuthCode.bind(controller),
   });
 
   // =============================================================================
