@@ -55,12 +55,14 @@ export class AuthController {
    * GET /api/auth/verify-email/:token
    */
   async verifyEmail(request: FastifyRequest<{ Params: { token: string } }>, reply: FastifyReply) {
-    await this.authService.verifyEmail(request.params.token);
+    const result = await this.authService.verifyEmail(request.params.token);
 
     return reply.send({
       success: true,
       message: MESSAGES[MESSAGE_CODES.AUTH_EMAIL_VERIFIED],
       messageCode: MESSAGE_CODES.AUTH_EMAIL_VERIFIED,
+      user: result.user,
+      tokens: result.tokens,
     });
   }
 

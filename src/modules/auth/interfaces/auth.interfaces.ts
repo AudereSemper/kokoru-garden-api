@@ -18,7 +18,10 @@ export interface IAuthService {
   }>;
 
   // Email verification
-  verifyEmail(token: string): Promise<void>;
+  verifyEmail(token: string): Promise<{
+    user: AuthUser;
+    tokens: AuthTokens;
+  }>;
   resendVerificationEmail(userId: string): Promise<void>;
 
   // Password management

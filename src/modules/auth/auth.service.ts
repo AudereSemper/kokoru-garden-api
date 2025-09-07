@@ -19,7 +19,7 @@ import { MESSAGE_CODES } from '../../shared/constants/message-codes';
 import { MESSAGES } from '../../shared/constants/messages';
 import { IAuthService } from './interfaces/auth.interfaces';
 import { User } from '../../database/schema';
-import { ITokenService } from "./interfaces/token.service.interface";
+import { ITokenService } from './interfaces/token.service.interface';
 
 export class AuthService implements IAuthService {
   constructor(
@@ -153,7 +153,10 @@ export class AuthService implements IAuthService {
   /**
    * Verify email
    */
-  async verifyEmail(token: string): Promise<void> {
+  async verifyEmail(token: string): Promise<{
+    user: AuthUser;
+    tokens: AuthTokens;
+  }> {
     const user = await this.findUserByToken(token, 'verification');
 
     await this.userRepository.update(user.id, {
@@ -162,12 +165,26 @@ export class AuthService implements IAuthService {
       emailVerificationExpires: null,
     });
 
-    // Send welcome email if already logged in
+    // Generate tokens to auto-login
+    const tokens = this.generateTokens(user.id, user.email);
+
+    // Update refresh token
+    await this.userRepository.update(user.id, {
+      refreshToken: tokens.refreshToken,
+      lastLoginAt: new Date(),
+    });
+
+    // Send welcome email if needed
     if (user.hasLoggedIn) {
       this.sendEmailSafe(async () => {
         await this.emailService.sendWelcomeEmail(user);
       });
     }
+
+    return {
+      user: this.sanitizeUser(user),
+      tokens,
+    };
   }
 
   /**
