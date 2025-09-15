@@ -445,7 +445,7 @@ export class EmailService implements IEmailService {
       subject: '🔑 Reset your Kokoru password',
       template: 'passwordReset',
       data: {
-        userName: user.username || user.firstName || 'there',
+        firstName: user.username || user.firstName || 'there',
         resetUrl,
         expiresIn: '1 hour',
       },
